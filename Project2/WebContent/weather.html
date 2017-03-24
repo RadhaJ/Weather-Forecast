@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+<script>
+$(document).ready(function(){
+	 
+    $("button").click(function(){
+    	
+    	var date1=document.getElementById("datevalue").value;
+    	var formattedDate = new Date(date1);
+    	if(!(formattedDate instanceof Date && !isNaN(formattedDate.valueOf())))
+    	{
+    	
+    	 $("#entry").html("Enter a valid Date");
+    	return(false);
+    	}
+        if(!(formattedDate.getFullYear() < 2030))
+    	{
+    	 $("#entry").html("Enter a Date before 2030");
+     	return(false);
+    	}
+        if(formattedDate.getFullYear() < 2013)
+        	{
+        	$("#entry").html("Enter a Date after 2013");
+        	return(false);
+        	}
+     	formattedDate.setDate(formattedDate.getDate()+1);
+     	//console.log(formattedDate);
+     	
+     	var d = formattedDate.getDate();
+     	var m =  formattedDate.getMonth();
+     	m += 1; 
+     	var y = formattedDate.getFullYear();
+     	
+     	date = y + "" + (m>9 ? '' : '0') + m + "" + (d>9 ? '' : '0') + d;
+     	//console.log(date);
+     	
+     	$.ajax({
+     		type:"GET",
+     		dataType:"json",
+     		async:true,
+     		url:"http://ec2-54-214-80-5.us-west-2.compute.amazonaws.com:8080/Project2/rest/api/forecasters/"+date,
+     		success:function(data){ 
+     			//console.log(data);
+     			//console.log(data[0]);
+     			//console.log(data[0].DATE)
+     			//$("#demo").html(data);
+     			createChart1(data);
+     		}
+     	}); 
+     	//*********************BONUS**********************
+     	$.ajax({
+     		type:"GET",
+     		dataType:"json",
+     		async:true,
+     		url:"http://ec2-54-214-80-5.us-west-2.compute.amazonaws.com:8080/Project2/rest/api/forecast/"+date,
+     		success:function(data){ 
+     			console.log(data);
+     			//console.log(data[0]);
+     			//console.log(data[0].DATE)
+     			//$("#demo").html(data);
+     			createChart2(data);
+     		}
+     	}); 
+    });
+});
+
+function createChart1(data){
+Highcharts.chart('container1', {
+    chart: {
+        type: 'line'
+    },
+    title: {
+        text: 'Daily Temperature'
+    },
+    subtitle: {
+        text: 'Source: HW2'
+    },
+    xAxis: {
+        categories: [data[0].DATE, data[1].DATE, data[2].DATE, data[3].DATE, data[4].DATE]
+    },
+    yAxis: {
+        title: {
+            text: 'Temperature (°C)'
+        }
+    },
+    plotOptions: {
+        line: {
+            dataLabels: {
+                enabled: true
+            },
+            enableMouseTracking: false
+        }
+    },
+    series: [{
+        name: 'TMAX',
+        data: [data[0].TMAX, data[1].TMAX, data[2].TMAX, data[3].TMAX, data[4].TMAX]
+    }, {
+        name: 'TMIN',
+        data: [data[0].TMIN, data[1].TMIN, data[2].TMIN, data[3].TMIN, data[4].TMIN]
+    }]
+  });
+}
+function createChart2(data){
+	Highcharts.chart('container2', {
+	    chart: {
+	        type: 'line'
+	    },
+	    title: {
+	        text: 'Daily Temperature'
+	    },
+	    subtitle: {
+	        text: 'Source: darksky api BONUS'
+	    },
+	    xAxis: {
+	        categories: [data[0].DATE, data[1].DATE, data[2].DATE, data[3].DATE, data[4].DATE]
+	    },
+	    yAxis: {
+	        title: {
+	            text: 'Temperature (°C)'
+	        }
+	    },
+	    plotOptions: {
+	        line: {
+	            dataLabels: {
+	                enabled: true
+	            },
+	            enableMouseTracking: false
+	        }
+	    },
+	    series: [{
+	        name: 'TMAX',
+	        data: [data[0].TMAX, data[1].TMAX, data[2].TMAX, data[3].TMAX, data[4].TMAX]
+	    }, {
+	        name: 'TMIN',
+	        data: [data[0].TMIN, data[1].TMIN, data[2].TMIN, data[3].TMIN, data[4].TMIN]
+	    }]
+	});
+}
+</script>
+
+</head>
+
+<body style="background-color:powderblue;">
+	<h1 style="color:red;font-family:Verdana;text-align:center">Weather Forecast</h1>
+	<div id="demo">
+		Date: <input type="date" id="datevalue" name="datevalue"/>
+		<button>Submit</button>
+	</div>
+	<p id="entry"></p>
+	<div id="container1" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+	<div style="min-width: 310p; height: 10px; margin: 0 auto"></div>
+	<div id="container2" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+</body>
+</html>   
