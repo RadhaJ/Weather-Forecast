@@ -1,5 +1,4 @@
-# Cloud-Assignment-3
-Create UI to Dynamic Using Service API
+#UI to Dynamic Using Service API
 
           Weather Forecaster
 In this assignment I created UI which uses asynchronous JavaScript requests to send the user-inputted data to the REST API built, receive the structured results and then published them into the page without refreshing the whole page again.
