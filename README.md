@@ -8,7 +8,7 @@ Language - Java,Javascript,AJAX,Jquery,HTML FrameWork - MVC (Servlets) Server - 
 
 To run the application just follow the below Url
 
-URL - http://54.214.80.5:8080/Project2/weather.html
+URL - http://54.214.80.5:8080/Project2
 
           Creating a local version
 Download the source code from github.
